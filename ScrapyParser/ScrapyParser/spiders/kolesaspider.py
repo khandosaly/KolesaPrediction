@@ -4,14 +4,32 @@ import scrapy
 class KolesaspiderSpider(scrapy.Spider):
     name = 'kolesaspider'
     allowed_domains = ['kolesa.kz']
-    start_urls = ['http://kolesa.kz/cars/']
+    start_urls = ['https://kolesa.kz/cars/']
+    urls = [
+        ['https://kolesa.kz/cars/region-aktubinskaya-oblast/?auto-custom=2', 4491],
+        ['https://kolesa.kz/cars/region-almatinskaya-oblast/?auto-custom=2&auto-car-transm=1', 15595],
+        ['https://kolesa.kz/cars/region-almatinskaya-oblast/?auto-custom=2&auto-car-transm=2',  29291],
+        ['https://kolesa.kz/cars/region-akmolinskaya-oblast/?auto-custom=2', 17729],
+        ['https://kolesa.kz/cars/region-atyrauskaya-oblast/?auto-custom=2', 3603],
+        ['https://kolesa.kz/cars/region-yuzhnokazahstanskaya-oblast/?auto-custom=2', 18045],
+        ['https://kolesa.kz/cars/region-vostochnokazakhstanskaya-oblast/?auto-custom=2', 7215],
+        ['https://kolesa.kz/cars/region-zhambilskaya-oblast/?auto-custom=2', 6609],
+        ['https://kolesa.kz/cars/region-zapadnokazakshstabskaya-oblast/?auto-custom=2', 2997],
+        ['https://kolesa.kz/cars/region-karagandinskaya-oblast/?auto-custom=2', 8645],
+        ['https://kolesa.kz/cars/region-kostanayskaya-oblast/?auto-custom=2', 3609],
+        ['https://kolesa.kz/cars/region-kyzylordinskaya-oblast/?auto-custom=2', 3978],
+        ['https://kolesa.kz/cars/region-mangistauskaya-oblast/?auto-custom=2', 5209],
+        ['https://kolesa.kz/cars/region-pavlodarskaya-oblast/?auto-custom=2', 4120],
+        ['https://kolesa.kz/cars/region-severokazakhstanskaya-oblast/?auto-custom=2', 1816]
+    ]
 
     def parse(self, response, **kwargs):
-        for i in range(1, 100):
-            yield scrapy.Request(
-                f'{self.start_urls[0]}?page={i}',
-                callback=self.parse_page
-            )
+        for url in self.urls:
+            for i in range(1, url[1]//20):
+                yield scrapy.Request(
+                    f'{url[0]}&page={i}',
+                    callback=self.parse_page
+                )
 
     def parse_page(self, response):
         titles = response.xpath(
